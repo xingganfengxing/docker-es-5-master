@@ -15,8 +15,6 @@ ENV PATH /usr/share/elasticsearch/bin:$PATH
 
 ENV ELASTICSEARCH_VERSION 5.6.3
 ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz" \
-	ELASTICSEARCH_TARBALL_ASC="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz.asc" \
-	#ELASTICSEARCH_TARBALL_SHA1="5652d5aad0c0d116817eb018d3b78a181d36bf86"
 
 RUN set -ex; \
 	\
@@ -28,14 +26,6 @@ RUN set -ex; \
 	; \
 	\
 	wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
-	if [ "$ELASTICSEARCH_TARBALL_ASC" ]; then \
-		wget -O elasticsearch.tar.gz.asc "$ELASTICSEARCH_TARBALL_ASC"; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY"; \
-		gpg --batch --verify elasticsearch.tar.gz.asc elasticsearch.tar.gz; \
-		rm -rf "$GNUPGHOME" elasticsearch.tar.gz.asc; \
-	fi; \
-	\
 	tar -xf elasticsearch.tar.gz --strip-components=1; \
 	rm elasticsearch.tar.gz; \
 	\
