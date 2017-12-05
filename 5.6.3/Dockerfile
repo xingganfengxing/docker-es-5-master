@@ -29,9 +29,9 @@ RUN set -ex; \
 	\
 	wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
 	\
-	if [ "$ELASTICSEARCH_TARBALL_SHA1" ]; then \
-		echo "$ELASTICSEARCH_TARBALL_SHA1 *elasticsearch.tar.gz" | sha1sum -c -; \
-	fi; \
+	#if [ "$ELASTICSEARCH_TARBALL_SHA1" ]; then \
+	#	echo "$ELASTICSEARCH_TARBALL_SHA1 *elasticsearch.tar.gz" | sha1sum -c -; \
+	#fi; \
 	\
 	if [ "$ELASTICSEARCH_TARBALL_ASC" ]; then \
 		wget -O elasticsearch.tar.gz.asc "$ELASTICSEARCH_TARBALL_ASC"; \
