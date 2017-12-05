@@ -2,11 +2,11 @@
 FROM primetoninc/jdk:1.8
 
 # ensure elasticsearch user exists
-RUN groupadd -r elasticsearch && adduser -r -G elasticsearch elasticsearch
+RUN groupadd -r elasticsearch && adduser -r -g elasticsearch elasticsearch
 
 # grab su-exec for easy step-down from root
 # and bash for "bin/elasticsearch" among others
-RUN apk add --no-cache 'su-exec>=0.2' bash
+#RUN apk add --no-cache 'su-exec>=0.2' bash
 
 # https://artifacts.elastic.co/GPG-KEY-elasticsearch
 ENV GPG_KEY 46095ACC8548582C1A2699A9D27D666CD88E42B4
@@ -20,32 +20,10 @@ ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/
 	ELASTICSEARCH_TARBALL_SHA1="d5e4b61038f2cc3ec7ae5cbecf3406c7ecc7a1c4"
 
 RUN set -ex; \
-	\
-	apk add --no-cache --virtual .fetch-deps \
-		ca-certificates \
-		gnupg \
-		openssl \
-		tar \
-	; \
-	\
 	wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
-	\
-	if [ "$ELASTICSEARCH_TARBALL_SHA1" ]; then \
-		echo "$ELASTICSEARCH_TARBALL_SHA1 *elasticsearch.tar.gz" | sha1sum -c -; \
-	fi; \
-	\
-	if [ "$ELASTICSEARCH_TARBALL_ASC" ]; then \
-		wget -O elasticsearch.tar.gz.asc "$ELASTICSEARCH_TARBALL_ASC"; \
-		export GNUPGHOME="$(mktemp -d)"; \
-		gpg --keyserver ha.pool.sks-keyservers.net --recv-keys "$GPG_KEY"; \
-		gpg --batch --verify elasticsearch.tar.gz.asc elasticsearch.tar.gz; \
-		rm -rf "$GNUPGHOME" elasticsearch.tar.gz.asc; \
-	fi; \
-	\
 	tar -xf elasticsearch.tar.gz --strip-components=1; \
 	rm elasticsearch.tar.gz; \
 	\
-	apk del .fetch-deps; \
 	\
 	mkdir -p ./plugins; \
 	for path in \
@@ -59,7 +37,7 @@ RUN set -ex; \
 	done; \
 	\
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
-	export ES_JAVA_OPTS='-Xms32m -Xmx32m'; \
+	export ES_JAVA_OPTS='-Xms128m -Xmx1024m'; \
 	if [ "${ELASTICSEARCH_VERSION%%.*}" -gt 1 ]; then \
 		elasticsearch --version; \
 	else \
