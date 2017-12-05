@@ -2,7 +2,7 @@
 FROM primetoninc/jdk:1.8
 
 # ensure elasticsearch user exists
-RUN addgroup -r elasticsearch && adduser -r -G elasticsearch elasticsearch
+RUN groupadd -r elasticsearch && adduser -r -G elasticsearch elasticsearch
 
 # grab su-exec for easy step-down from root
 # and bash for "bin/elasticsearch" among others
