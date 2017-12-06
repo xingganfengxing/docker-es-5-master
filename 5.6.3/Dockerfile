@@ -1,9 +1,10 @@
 #FROM openjdk:8-jre-alpine
 #FROM primetoninc/jdk:1.8
-FROM ubuntu:16.04
+FROM nuagebec/ubuntu:16.04
 
+RUN apt-get install wget
 # ensure elasticsearch user exists
-RUN groupadd -r elasticsearch && adduser -r -g elasticsearch elasticsearch
+RUN groupadd elasticsearch && useradd  elasticsearch -g elasticsearch
 
 # grab su-exec for easy step-down from root
 # and bash for "bin/elasticsearch" among others
