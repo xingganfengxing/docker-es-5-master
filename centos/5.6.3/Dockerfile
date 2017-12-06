@@ -11,12 +11,14 @@ WORKDIR /usr/local/elasticsearch
 ENV PATH /usr/local/elasticsearch/bin:$PATH
 
 ENV ELASTICSEARCH_VERSION 5.6.3
+
+COPY elasticsearch-5.6.3.tar.gz ./elasticsearch.tar.gz
 ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz" \
 	ELASTICSEARCH_TARBALL_ASC="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz.asc" \
 	ELASTICSEARCH_TARBALL_SHA1="d5e4b61038f2cc3ec7ae5cbecf3406c7ecc7a1c4"
 
 RUN set -ex; \
-	wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
+	#wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
 	tar -xf elasticsearch.tar.gz --strip-components=1; \
 	rm elasticsearch.tar.gz; \
 	\
