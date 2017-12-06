@@ -1,5 +1,6 @@
 #FROM openjdk:8-jre-alpine
-FROM primetoninc/jdk:1.8
+#FROM primetoninc/jdk:1.8
+FROM ubuntu:16.04
 
 # ensure elasticsearch user exists
 RUN groupadd -r elasticsearch && adduser -r -g elasticsearch elasticsearch
