@@ -1,0 +1,11 @@
+cluster.name: es5
+node.name: master-1
+http.host: 0.0.0.0
+node.master: true
+node.data: false
+http.port: 9200
+transport.tcp.port: 9300
+
+# Uncomment the following lines for a production cluster deployment
+#transport.host: 0.0.0.0
+#discovery.zen.minimum_master_nodes: 1
