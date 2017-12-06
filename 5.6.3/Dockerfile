@@ -36,6 +36,13 @@ RUN set -ex; \
 		chown -R elasticsearch:elasticsearch "$path"; \
 	done; \
 	\
+	wget --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u5-b13/jdk-8u5-linux-x64.tar.gz \
+	mkdir -p /usr/lib/jvm/oracle_jdk8 \
+	tar -zxf jdk-8u5-linux-x64.tar.gz -C /usr/lib/jvm/oracle_jdk8 \
+	update-alternatives --install /usr/bin/java java /usr/lib/jvm/oracle_jdk8/jre/bin/java 2000 \
+	update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/oracle_jdk8/bin/javac 2000 \
+	update-alternatives --config java \
+	update-alternatives --config javac \
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
 	export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
 	if [ "${ELASTICSEARCH_VERSION%%.*}" -gt 1 ]; then \
