@@ -16,6 +16,7 @@ ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/
 	ELASTICSEARCH_TARBALL_SHA1="d5e4b61038f2cc3ec7ae5cbecf3406c7ecc7a1c4"
 
 RUN set -ex; \
+  yum install -y telnet \
 	wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
 	tar -xf elasticsearch.tar.gz --strip-components=1; \
 	rm elasticsearch.tar.gz; \
@@ -49,6 +50,6 @@ VOLUME /elasticsearch/data
 COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 
-EXPOSE 19200 19300
+EXPOSE 9200 9300
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["elasticsearch"]
