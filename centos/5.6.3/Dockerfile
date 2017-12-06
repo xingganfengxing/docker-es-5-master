@@ -4,15 +4,11 @@ FROM primetoninc/jdk:1.8
 # ensure elasticsearch user exists
 RUN groupadd -r elasticsearch && adduser -r -g elasticsearch elasticsearch
 
-# grab su-exec for easy step-down from root
-# and bash for "bin/elasticsearch" among others
-#RUN apk add --no-cache 'su-exec>=0.2' bash
-
 # https://artifacts.elastic.co/GPG-KEY-elasticsearch
 ENV GPG_KEY 46095ACC8548582C1A2699A9D27D666CD88E42B4
 
-WORKDIR /usr/share/elasticsearch
-ENV PATH /usr/share/elasticsearch/bin:$PATH
+WORKDIR /usr/local/elasticsearch
+ENV PATH /usr/local/elasticsearch/bin:$PATH
 
 ENV ELASTICSEARCH_VERSION 5.6.3
 ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz" \
@@ -37,7 +33,7 @@ RUN set -ex; \
 	done; \
 	\
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
-	export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
+	#export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
 	if [ "${ELASTICSEARCH_VERSION%%.*}" -gt 1 ]; then \
 		elasticsearch --version; \
 	else \
@@ -46,13 +42,13 @@ RUN set -ex; \
 		elasticsearch -v; \
 	fi
 
-COPY config ./config
+#COPY config ./config
 
-VOLUME /usr/share/elasticsearch/data
+VOLUME /elasticsearch/data
 
 COPY docker-entrypoint.sh /
 RUN chmod +x /docker-entrypoint.sh
 
-EXPOSE 9200 9300
+EXPOSE 19200 19300
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["elasticsearch"]
