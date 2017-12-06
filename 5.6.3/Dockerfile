@@ -35,7 +35,6 @@ RUN set -ex; \
 		mkdir -p "$path"; \
 		chown -R elasticsearch:elasticsearch "$path"; \
 	done; \
-	chmod +x docker-entrypoint.sh;\
 	\
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
 	export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
@@ -52,6 +51,7 @@ COPY config ./config
 VOLUME /usr/share/elasticsearch/data
 
 COPY docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 9200 9300
 ENTRYPOINT ["/docker-entrypoint.sh"]
