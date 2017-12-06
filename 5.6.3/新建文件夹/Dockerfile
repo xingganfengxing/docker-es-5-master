@@ -35,10 +35,9 @@ RUN set -ex; \
 		mkdir -p "$path"; \
 		chown -R elasticsearch:elasticsearch "$path"; \
 	done; \
-	chmod +x docker-entrypoint.sh;\
 	\
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
-	export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
+	export ES_JAVA_OPTS='-Xms128m -Xmx1024m'; \
 	if [ "${ELASTICSEARCH_VERSION%%.*}" -gt 1 ]; then \
 		elasticsearch --version; \
 	else \
