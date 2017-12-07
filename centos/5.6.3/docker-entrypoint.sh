@@ -5,7 +5,6 @@ DEFAULT_ES_USER=elasticsearch
 
 if [ `id -u` = 0 ]; then
   for path in \
-  	/usr/local/elasticsearch/config \
 		/usr/local/elasticsearch/data \
 		/usr/local/elasticsearch/logs \
 	; do
