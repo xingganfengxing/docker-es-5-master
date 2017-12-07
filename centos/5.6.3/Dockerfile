@@ -13,7 +13,7 @@ ENV PATH /usr/local/elasticsearch/bin:$PATH
 ENV ELASTICSEARCH_VERSION 5.6.3
 
 COPY elasticsearch-5.6.3.tar.gz ./elasticsearch.tar.gz
-COPY node-v8.9.2-linux-x64.tar.xz ./elasticsearch.tar.gz
+COPY node-v8.9.2-linux-x64.tar.xz ./node-v8.9.2-linux-x64.tar.xz
 ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz" \
 	ELASTICSEARCH_TARBALL_ASC="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz.asc" \
 	ELASTICSEARCH_TARBALL_SHA1="d5e4b61038f2cc3ec7ae5cbecf3406c7ecc7a1c4"
