@@ -2,7 +2,7 @@
 FROM primetoninc/jdk:1.8
 
 # ensure elasticsearch user exists
-RUN groupadd -r search && adduser -r -g search search
+RUN groupadd -r elasticsearch && adduser -r -g elasticsearch elasticsearch
 
 # https://artifacts.elastic.co/GPG-KEY-elasticsearch
 ENV GPG_KEY 46095ACC8548582C1A2699A9D27D666CD88E42B4
@@ -32,7 +32,7 @@ RUN set -ex; \
 		./config/scripts \
 	; do \
 		mkdir -p "$path"; \
-		#chown -R search:search "$path"; \
+		chown -R elasticsearch:elasticsearch "$path"; \
 	done; \
 	\
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
