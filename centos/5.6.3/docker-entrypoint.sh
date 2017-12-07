@@ -10,9 +10,9 @@ if [ `id -u` = 0 ]; then
 		/usr/local/elasticsearch/logs \
 	; do
 		#chown -R  search:search "$path"
-		$CMD
 	done
-  su -c "$CMD" $DEFAULT_ES_USER
+  #su -c "$CMD" $DEFAULT_ES_USER
+  $CMD
   echo "Running as non-root..."
 else
   $CMD
