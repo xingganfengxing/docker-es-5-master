@@ -38,11 +38,11 @@ RUN set -ex; \
 # we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
 	#export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
 	if [ "${ELASTICSEARCH_VERSION%%.*}" -gt 1 ]; then \
-		./elasticsearch --version; \
+		elasticsearch --version; \
 	else \
 # elasticsearch 1.x doesn't support --version
 # but in 5.x, "-v" is verbose (and "-V" is --version)
-		./elasticsearch -v; \
+		elasticsearch -v; \
 	fi
 
 COPY config ./config
