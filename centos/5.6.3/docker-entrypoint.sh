@@ -1,6 +1,6 @@
 #!/bin/bash
 ES_HOME=/usr/local/elasticsearch
-CMD="$ES_HOME/bin/elasticsearch -Des.insecure.allow.root=true"
+CMD="$ES_HOME/bin/elasticsearch"
 DEFAULT_ES_USER=search
 
 if [ `id -u` = 0 ]; then
