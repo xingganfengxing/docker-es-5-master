@@ -1,15 +1,20 @@
-FROM iojs
-MAINTAINER Austin Salgat <salgat@salgat.net>
+FROM node:slim
 
-WORKDIR /opt/head
-RUN git clone git://github.com/mobz/elasticsearch-head.git
+RUN apt-get update && \
+    apt-get install -y git node-gyp && \
+    apt-get autoremove -y && \
+    apt-get clean all && \
+    rm -rf /var/lib/apt/lists/* && \
+    npm install -g grunt grunt-cli && \
+    git clone git://github.com/mobz/elasticsearch-head.git
 
-WORKDIR /opt/head/elasticsearch-head
-ADD Gruntfile.js Gruntfile.js
-RUN npm update
-RUN npm install -g grunt-cli
-RUN npm install -p /opt/head/elasticsearch-head
+RUN cd elasticsearch-head && \
+    npm install && \
+    sed -i 's/port: 9100,/hostname: "0.0.0.0", port: 9100,/g' Gruntfile.js
+    sed -i 's/http://localhost:9200,/http://47.97.17.78:19200,/g' _site/app.js
 
-ADD run.sh /run.sh
-RUN chmod +x /run.sh
-CMD ["/run.sh"]
+WORKDIR /elasticsearch-head
+
+EXPOSE 9100
+
+CMD ["grunt", "server"]

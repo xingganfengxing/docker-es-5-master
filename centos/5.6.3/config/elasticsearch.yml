@@ -12,3 +12,8 @@ bootstrap.system_call_filter: false
 # Uncomment the following lines for a production cluster deployment
 #transport.host: 0.0.0.0
 #discovery.zen.minimum_master_nodes: 1
+
+#开启跨域访问支持，默认为false  
+http.cors.enabled: true  
+#跨域访问允许的域名地址，(允许所有域名)以上使用正则
+http.cors.allow-origin: /.*/ 
