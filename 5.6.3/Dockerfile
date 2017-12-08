@@ -1,67 +1,54 @@
-#FROM openjdk:8-jre-alpine
-#FROM primetoninc/jdk:1.8
-FROM nuagebec/ubuntu:16.04
+############################################
+# version : birdben/elasticsearch_5.x:v2
+# desc : 当前版本安装的elasticsearch_5.x
+############################################
+# 设置继承自我们创建的 jdk8 镜像
+FROM birdben/jdk8:v2
 
-RUN apt-get install wget
-# ensure elasticsearch user exists
-RUN groupadd elasticsearch && useradd  elasticsearch -g elasticsearch
+# 添加User和Group
+RUN groupadd -r elasticsearch \
+    && useradd -r -g elasticsearch elasticsearch
 
-# grab su-exec for easy step-down from root
-# and bash for "bin/elasticsearch" among others
-#RUN apk add --no-cache 'su-exec>=0.2' bash
+# 导入Elasticsearch的PGP key
+RUN set -x \
+	&& wget -qO - https://artifacts.elastic.co/GPG-KEY-elasticsearch | apt-key add -
 
-# https://artifacts.elastic.co/GPG-KEY-elasticsearch
-ENV GPG_KEY 46095ACC8548582C1A2699A9D27D666CD88E42B4
+RUN set -x \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends apt-transport-https \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& echo 'deb https://artifacts.elastic.co/packages/5.x/apt stable main' > /etc/apt/sources.list.d/elasticsearch.list
 
-WORKDIR /usr/share/elasticsearch
+ENV ES_VERSION 5.6.3
+ENV ES_SKIP_SET_KERNEL_PARAMETERS true
+
+RUN set -x \
+	&& apt-get update \
+	&& apt-get install -y --no-install-recommends "elasticsearch=$ES_VERSION" \
+	&& rm -rf /var/lib/apt/lists/* \
+	&& mkdir -p /usr/share/elasticsearch/data \
+	&& mkdir -p /usr/share/elasticsearch/logs \
+	&& mkdir -p /usr/share/elasticsearch/config \
+	&& mkdir -p /usr/share/elasticsearch/repo \
+	&& chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/data \
+	&& chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/logs \
+	&& chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/config \
+	&& chown -R elasticsearch:elasticsearch /usr/share/elasticsearch/repo
+
+ENV ES_HOME /usr/share/elasticsearch
 ENV PATH /usr/share/elasticsearch/bin:$PATH
 
-ENV ELASTICSEARCH_VERSION 5.6.3
-ENV ELASTICSEARCH_TARBALL="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz" \
-	ELASTICSEARCH_TARBALL_ASC="https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.6.3.tar.gz.asc" \
-	ELASTICSEARCH_TARBALL_SHA1="d5e4b61038f2cc3ec7ae5cbecf3406c7ecc7a1c4"
-
-RUN set -ex; \
-	wget -O elasticsearch.tar.gz "$ELASTICSEARCH_TARBALL"; \
-	tar -xf elasticsearch.tar.gz --strip-components=1; \
-	rm elasticsearch.tar.gz; \
-	\
-	\
-	mkdir -p ./plugins; \
-	for path in \
-		./data \
-		./logs \
-		./config \
-		./config/scripts \
-	; do \
-		mkdir -p "$path"; \
-		chown -R elasticsearch:elasticsearch "$path"; \
-	done; \
-	\
-	wget --header "Cookie: oraclelicense=accept-securebackup-cookie" http://download.oracle.com/otn-pub/java/jdk/8u5-b13/jdk-8u5-linux-x64.tar.gz \
-	mkdir -p /usr/lib/jvm/oracle_jdk8 \
-	tar -zxf jdk-8u5-linux-x64.tar.gz -C /usr/lib/jvm/oracle_jdk8 \
-	update-alternatives --install /usr/bin/java java /usr/lib/jvm/oracle_jdk8/jre/bin/java 2000 \
-	update-alternatives --install /usr/bin/javac javac /usr/lib/jvm/oracle_jdk8/bin/javac 2000 \
-	update-alternatives --config java \
-	update-alternatives --config javac \
-# we shouldn't need much RAM to test --version (default is 2gb, which gets Jenkins in trouble sometimes)
-	export ES_JAVA_OPTS='-Xms128m -Xmx512m'; \
-	if [ "${ELASTICSEARCH_VERSION%%.*}" -gt 1 ]; then \
-		elasticsearch --version; \
-	else \
-# elasticsearch 1.x doesn't support --version
-# but in 5.x, "-v" is verbose (and "-V" is --version)
-		elasticsearch -v; \
-	fi
-
-COPY config ./config
+# 复制docker-entrypoint.sh脚本到/usr/local/bin目录下
+COPY docker-entrypoint.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
 VOLUME /usr/share/elasticsearch/data
+VOLUME /usr/share/elasticsearch/logs
+VOLUME /usr/share/elasticsearch/config
+VOLUME /usr/share/elasticsearch/repo
 
-COPY docker-entrypoint.sh /
-RUN chmod +x /docker-entrypoint.sh
-
+# 容器需要开放ES的9200和9300端口
 EXPOSE 9200 9300
-ENTRYPOINT ["/docker-entrypoint.sh"]
+
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["elasticsearch"]

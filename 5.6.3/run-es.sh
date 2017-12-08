@@ -1,0 +1,1 @@
+docker run -itd -p 9200:9200 -p 9300:9300 --user elasticsearch --name elasticsearch_5.x_elasticsearch hd/elasticsearch_5:v1

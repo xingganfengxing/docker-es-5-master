@@ -1,0 +1,1 @@
+docker run -itd -p 29200:9200 -p 29300:9300 --name elasticsearch_5.x_root birdben/elasticsearch_5:v1
